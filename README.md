@@ -28,7 +28,11 @@ Welcome to our GitHub repository! This educational management system enables stu
 ![image](https://github.com/LakshanChinthaka/learning-management-system/assets/115285758/0891d1b7-2d4e-4bc6-b42e-f541aaeaa38a)
 
 ### Student Controller
-![image](https://github.com/LakshanChinthaka/learning-management-system/assets/115285758/6f1d2947-c261-4dcd-bc6a-6c24d08490a5)
+![image](https://github.com/LakshanChinthaka/learning-management-system/assets/115285758/dc8e1522-7df2-408a-9de6-7cf472ec86d0)
+
+### Subject Controller
+![image](https://github.com/LakshanChinthaka/learning-management-system/assets/115285758/72f6c395-8fa0-4d12-b0b1-0dddc61a97d5)
+
 
 ### Assignment Controller
 ![image](https://github.com/LakshanChinthaka/learning-management-system/assets/115285758/18317613-bd21-4b6b-ae30-0a04c7ac8572)
@@ -36,7 +40,7 @@ Welcome to our GitHub repository! This educational management system enables stu
 ### Assignment details Controller
 ![image](https://github.com/LakshanChinthaka/learning-management-system/assets/115285758/25489aa7-4149-409b-9758-0570426f95a8)
 
-## Pagination 
+### Pagination 
 ![image](https://github.com/LakshanChinthaka/learning-management-system/assets/115285758/690d4f72-c884-4205-a4a7-f51fa082c507)
 
 Response
