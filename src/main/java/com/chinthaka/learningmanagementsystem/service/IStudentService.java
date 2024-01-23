@@ -4,6 +4,9 @@ import com.chinthaka.learningmanagementsystem.dto.paginated.PaginatedStudentResp
 import com.chinthaka.learningmanagementsystem.dto.request.StudentSaveDto;
 import com.chinthaka.learningmanagementsystem.dto.response.StudentResponseDto;
 import com.chinthaka.learningmanagementsystem.dto.response.StudentWithCourseResponseDto;
+import com.chinthaka.learningmanagementsystem.enums.Gender;
+
+import java.util.List;
 
 public interface IStudentService {
 
@@ -15,4 +18,6 @@ public interface IStudentService {
     PaginatedStudentResponseDto getAllStudent(boolean activeStatus, int page, int size);
 
     String assignCourseToStudent(long studentId, long courseId);
+
+    List<StudentResponseDto> filterByStatusAndGender(boolean activeStatus, Gender gender);
 }

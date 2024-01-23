@@ -16,7 +16,7 @@ public interface StudentMapper {
     StudentMapper studentMapper = Mappers.getMapper( StudentMapper.class );
 
     Student studentSaveDtoToEntity(StudentSaveDto studentSaveDto);
-
+    List<StudentResponseDto> EntityListToStudentResponseDto(List<Student> students);
     @Mapping(target = "address.dateOfModify", ignore = true)
     StudentResponseDto entityToStudentGetResponseDto(Student student);
 

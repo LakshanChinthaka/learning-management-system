@@ -11,6 +11,7 @@ import com.chinthaka.learningmanagementsystem.entity.Student;
 import com.chinthaka.learningmanagementsystem.entity.Subject;
 import com.chinthaka.learningmanagementsystem.enums.CourseMedium;
 import com.chinthaka.learningmanagementsystem.enums.CourseType;
+import com.chinthaka.learningmanagementsystem.enums.Gender;
 import com.chinthaka.learningmanagementsystem.exception.AlreadyExistException;
 import com.chinthaka.learningmanagementsystem.exception.HandleException;
 import com.chinthaka.learningmanagementsystem.exception.NotFoundException;
@@ -26,6 +27,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @Transactional
@@ -64,10 +66,10 @@ public class StudentServiceImpl implements IStudentService {
     @Override
     public StudentWithCourseResponseDto getStudentById(long StudentId) {
         final Student student = studentRepo.findById(StudentId)
-                .orElseThrow(()-> new NotFoundException("Student id-" + StudentId + " not found"));
+                .orElseThrow(() -> new NotFoundException("Student id-" + StudentId + " not found"));
         final GetCourseDetails courseDetails = courseAssignRepo.getCourseDetails(StudentId);
         final StudentResponseDto convertSubject = studentMapper.entityToStudentGetResponseDto(student);
-        return new StudentWithCourseResponseDto(convertSubject,courseDetails);
+        return new StudentWithCourseResponseDto(convertSubject, courseDetails);
     }
 
     @Override
@@ -104,6 +106,15 @@ public class StudentServiceImpl implements IStudentService {
         } catch (Exception e) {
             throw new HandleException("Something went wrong during student enroll");
         }
+    }
+
+    @Override
+    public List<StudentResponseDto> filterByStatusAndGender(boolean activeStatus, Gender gender) {
+        final List<Student> students = studentRepo.findByActiveStatusAndGender(activeStatus, gender);
+        if (!students.isEmpty()) {
+            return studentMapper.EntityListToStudentResponseDto(students);
+        }
+        throw new NotFoundException("No data found");
     }
 
     private boolean isStudentExist(long studentId) {

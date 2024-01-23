@@ -3,11 +3,14 @@ package com.chinthaka.learningmanagementsystem.service.impl;
 import com.chinthaka.learningmanagementsystem.dto.query.getCourseAndSubjectDetails;
 import com.chinthaka.learningmanagementsystem.dto.request.AssignSubjectToCourseDto;
 import com.chinthaka.learningmanagementsystem.dto.request.CourseSaveDto;
+import com.chinthaka.learningmanagementsystem.dto.response.CourseResponseDto;
 import com.chinthaka.learningmanagementsystem.dto.response.GetCourseDetailsDto;
 import com.chinthaka.learningmanagementsystem.dto.response.getAllCourseDetailsResponseDto;
 import com.chinthaka.learningmanagementsystem.entity.Course;
 import com.chinthaka.learningmanagementsystem.entity.Subject;
 import com.chinthaka.learningmanagementsystem.entity.SubjectAssign;
+import com.chinthaka.learningmanagementsystem.enums.CourseMedium;
+import com.chinthaka.learningmanagementsystem.enums.CourseType;
 import com.chinthaka.learningmanagementsystem.exception.AlreadyExistException;
 import com.chinthaka.learningmanagementsystem.exception.HandleException;
 import com.chinthaka.learningmanagementsystem.exception.NotFoundException;
@@ -130,6 +133,17 @@ public class CourseServiceImpl implements ICourseService {
         } else {
             throw new NotFoundException("Course not found");
         }
+    }
+    @Override
+    public List<CourseResponseDto> filterByAllTypes
+            (boolean activeStatus, boolean certificate, CourseMedium courseMedium, CourseType coursetype) {
+
+        final List<Course> courses =
+                courseRepo.findByActiveStatusAndCertificateAndMediumAndType(activeStatus,certificate,courseMedium,coursetype);
+       if (!courses.isEmpty()){
+           return courseMapper.EntityToCourseResponseDto(courses);
+       }
+       throw new NotFoundException("No data found");
     }
 
 }

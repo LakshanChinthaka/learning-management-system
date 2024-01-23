@@ -4,12 +4,15 @@ import com.chinthaka.learningmanagementsystem.dto.paginated.PaginatedStudentResp
 import com.chinthaka.learningmanagementsystem.dto.request.StudentSaveDto;
 import com.chinthaka.learningmanagementsystem.dto.response.StudentResponseDto;
 import com.chinthaka.learningmanagementsystem.dto.response.StudentWithCourseResponseDto;
+import com.chinthaka.learningmanagementsystem.enums.Gender;
 import com.chinthaka.learningmanagementsystem.service.IStudentService;
 import com.chinthaka.learningmanagementsystem.utils.StandardResponse;
 import jakarta.validation.constraints.Max;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/student")
@@ -57,6 +60,17 @@ public class StudentController {
     ){
         final String data =
                 StudentService.assignCourseToStudent(studentId,courseId);
+        return new ResponseEntity<StandardResponse>(
+                new StandardResponse(200,"Success",data),HttpStatus.OK
+        );
+    }
+
+    @GetMapping(value = "/filter-status-and-gender",params = {"status","gender"})
+    public ResponseEntity<StandardResponse> filterByStatusAndGender(
+            @RequestParam(name = "status",required = false,defaultValue = "1") boolean activeStatus,
+            @RequestParam(name = "gender") Gender gender
+            ){
+        final List<StudentResponseDto> data = StudentService.filterByStatusAndGender(activeStatus,gender);
         return new ResponseEntity<StandardResponse>(
                 new StandardResponse(200,"Success",data),HttpStatus.OK
         );

@@ -15,7 +15,12 @@ public interface CourseAssignRepo extends JpaRepository<CourseAssign,Long> {
 
     boolean existsByCourseAndStudent(Course course, Student student);
 
-    @Query(value = "SELECT c.course_id AS courseId, c.course_code AS code, c.type AS type, c.medium AS medium, c.duration AS duration,  c.course_name AS courseName FROM course_assign ca JOIN course c ON ca.course_id = c.course_id WHERE ca.student_id = :id AND ca.course_id = c.course_id", nativeQuery = true)
+    @Query(value = "SELECT c.course_id AS courseId, c.course_code AS code, c.type AS type, c.medium AS medium, c.duration AS duration,  c.course_name AS courseName" +
+            " FROM course_assign ca " +
+            "JOIN course c " +
+            "ON ca.course_id = c.course_id " +
+            "WHERE ca.student_id = :id " +
+            "AND ca.course_id = c.course_id", nativeQuery = true)
     GetCourseDetails getCourseDetails(long id);
 }
 
