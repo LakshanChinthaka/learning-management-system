@@ -9,6 +9,7 @@ import com.chinthaka.learningmanagementsystem.exception.NotFoundException;
 import com.chinthaka.learningmanagementsystem.mapper.SubjectMapper;
 import com.chinthaka.learningmanagementsystem.repo.SubjectRepo;
 import com.chinthaka.learningmanagementsystem.service.ISubjectService;
+import com.chinthaka.learningmanagementsystem.utils.EntityUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -36,11 +37,8 @@ public class SubjectServiceImpl implements ISubjectService {
 
     @Override
     public SubjectResponseByIdDto getBySubjectId(long subjectId) {
-        if (subjectRepo.existsById(subjectId)) {
-            final Subject subject = subjectRepo.findById(subjectId).orElse(null);
+            final Subject subject = EntityUtils.getSubjectDetails(subjectId,subjectRepo);
             return subjectMapper.EntityToSubjectResponseByIdDto(subject);
-        }
-        throw new NotFoundException("Subject Id-" + subjectId + " not found");
     }
     @Override
     public PaginatedSubjectResponseDto getAllSubject( boolean activeStatus, int page, int size) {

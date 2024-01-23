@@ -20,6 +20,7 @@ import com.chinthaka.learningmanagementsystem.repo.CourseRepo;
 import com.chinthaka.learningmanagementsystem.repo.SubjectAssignRepo;
 import com.chinthaka.learningmanagementsystem.repo.SubjectRepo;
 import com.chinthaka.learningmanagementsystem.service.ICourseService;
+import com.chinthaka.learningmanagementsystem.utils.EntityUtils;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -62,8 +63,7 @@ public class CourseServiceImpl implements ICourseService {
 
     @Override
     public String assignSubjectToCourse(AssignSubjectToCourseDto assignSubjectToCourseDto) {
-        Course course = courseRepo.findById(assignSubjectToCourseDto.getCourse())
-                .orElseThrow(() -> new NotFoundException("Course Not found"));
+        Course course = EntityUtils.getCourseDetails(assignSubjectToCourseDto.getCourse(),courseRepo);
         for (Long x : assignSubjectToCourseDto.getSubjectId()) {
             if (!subjectRepo.existsById(x)) {
                 throw new NotFoundException("Subject Id-" + x + " not found");
@@ -90,10 +90,8 @@ public class CourseServiceImpl implements ICourseService {
 
     @Override
     public String deleteAssignSubject(Long subjectId, Long courseId) {
-        final Course getCourse = courseRepo.findById(courseId)
-                .orElseThrow(() -> new NotFoundException("Course not found"));
-        final Subject getSubject = subjectRepo.findById(subjectId)
-                .orElseThrow(() -> new NotFoundException("Subject not found"));
+        final Course getCourse = EntityUtils.getCourseDetails(courseId,courseRepo);
+        final Subject getSubject = EntityUtils.getSubjectDetails(subjectId,subjectRepo);
         try {
             final SubjectAssign subjectAssign = subjectAssignRpo.findByCourseAndSubject(getCourse, getSubject);
             subjectAssignRpo.delete(subjectAssign);
@@ -106,8 +104,7 @@ public class CourseServiceImpl implements ICourseService {
 
     @Override
     public GetCourseDetailsDto getCourseById(Long courseId) {
-        final Course course = courseRepo.findById(courseId)
-                .orElseThrow(() -> new NotFoundException("Course not found"));
+        Course course = EntityUtils.getCourseDetails(courseId,courseRepo);
         List<getCourseAndSubjectDetails> subjectIds = subjectAssignRpo.findGetSubjectDetails(courseId);
         return new GetCourseDetailsDto(
                 courseMapper.EntityToCourseResponseDto(course),

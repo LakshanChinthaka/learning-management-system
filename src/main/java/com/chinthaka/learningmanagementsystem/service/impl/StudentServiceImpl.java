@@ -21,6 +21,7 @@ import com.chinthaka.learningmanagementsystem.repo.CourseAssignRepo;
 import com.chinthaka.learningmanagementsystem.repo.CourseRepo;
 import com.chinthaka.learningmanagementsystem.repo.StudentRepo;
 import com.chinthaka.learningmanagementsystem.service.IStudentService;
+import com.chinthaka.learningmanagementsystem.utils.EntityUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -28,6 +29,8 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
+
+import static com.chinthaka.learningmanagementsystem.utils.EntityUtils.getStudentDetails;
 
 @Service
 @Transactional
@@ -65,8 +68,7 @@ public class StudentServiceImpl implements IStudentService {
 
     @Override
     public StudentWithCourseResponseDto getStudentById(long StudentId) {
-        final Student student = studentRepo.findById(StudentId)
-                .orElseThrow(() -> new NotFoundException("Student id-" + StudentId + " not found"));
+        final Student student = EntityUtils.getStudentDetails(StudentId,studentRepo);
         final GetCourseDetails courseDetails = courseAssignRepo.getCourseDetails(StudentId);
         final StudentResponseDto convertSubject = studentMapper.entityToStudentGetResponseDto(student);
         return new StudentWithCourseResponseDto(convertSubject, courseDetails);
@@ -88,10 +90,8 @@ public class StudentServiceImpl implements IStudentService {
 
     @Override
     public String assignCourseToStudent(long studentId, long courseId) {
-        final Student student = studentRepo.findById(studentId)
-                .orElseThrow(() -> new NotFoundException("Student not found"));
-        final Course course = courseRepo.findById(courseId)
-                .orElseThrow(() -> new NotFoundException("Course not found"));
+        final Student student = EntityUtils.getStudentDetails(studentId,studentRepo);
+        final Course course = EntityUtils.getCourseDetails(courseId,courseRepo);
         if (courseAssignRepo.existsByCourseAndStudent(course, student)) {
             throw new AlreadyExistException("Course already assigned to the student");
         }
@@ -117,9 +117,6 @@ public class StudentServiceImpl implements IStudentService {
         throw new NotFoundException("No data found");
     }
 
-    private boolean isStudentExist(long studentId) {
-        return studentRepo.existsById(studentId);
-    }
 }
 
 

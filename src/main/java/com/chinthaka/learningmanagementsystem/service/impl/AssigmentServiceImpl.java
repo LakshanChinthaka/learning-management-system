@@ -15,6 +15,7 @@ import com.chinthaka.learningmanagementsystem.repo.AssignmentRepo;
 import com.chinthaka.learningmanagementsystem.repo.CourseRepo;
 import com.chinthaka.learningmanagementsystem.repo.SubjectRepo;
 import com.chinthaka.learningmanagementsystem.service.IAssignmentService;
+import com.chinthaka.learningmanagementsystem.utils.EntityUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -27,17 +28,13 @@ import java.util.stream.Collectors;
 public class AssigmentServiceImpl implements IAssignmentService {
 
     private final AssignmentRepo assignmentRepo;
-    private final AssignmentMapper assignmentMapper;
     private final CourseRepo courseRepo;
     private final SubjectRepo subjectRepo;
-    private final AssignmentDetailsRepo assignmentDetailsRepo;
 
-    public AssigmentServiceImpl(AssignmentRepo assignmentRepo, AssignmentMapper assignmentMapper, CourseRepo courseRepo, SubjectRepo subjectRepo, AssignmentDetailsRepo assignmentDetailsRepo) {
+    public AssigmentServiceImpl(AssignmentRepo assignmentRepo, CourseRepo courseRepo, SubjectRepo subjectRepo) {
         this.assignmentRepo = assignmentRepo;
-        this.assignmentMapper = assignmentMapper;
         this.courseRepo = courseRepo;
         this.subjectRepo = subjectRepo;
-        this.assignmentDetailsRepo = assignmentDetailsRepo;
     }
 
     @Override
@@ -48,10 +45,8 @@ public class AssigmentServiceImpl implements IAssignmentService {
         if (assignmentRepo.existsByCode(assigmentAddDto.getCode())) {
             throw new AlreadyExistException("Assignment Already Exist");
         }
-        final Course course = courseRepo.findById(assigmentAddDto.getCourse())
-                .orElseThrow(() -> new NotFoundException("Course not found"));
-        final Subject subject = subjectRepo.findById(assigmentAddDto.getSubject())
-                .orElseThrow(() -> new NotFoundException("Subject not found"));
+        final Course course = EntityUtils.getCourseDetails(assigmentAddDto.getCourse(),courseRepo);
+        final Subject subject = EntityUtils.getSubjectDetails(assigmentAddDto.getSubject(),subjectRepo);
         try {
             Assignment assignment = new Assignment(
                     assigmentAddDto.getAssignmentId(),
@@ -79,8 +74,7 @@ public class AssigmentServiceImpl implements IAssignmentService {
 
     @Override
     public List<AssigmentResponseDto> filterByCourseAndAssigmentName(Long courseId, String assigmentName) {
-        final Course course = courseRepo.findById(courseId)
-                .orElseThrow(() -> new NotFoundException("Course not found"));
+        final Course course = EntityUtils.getCourseDetails(courseId,courseRepo);
         final List<Assignment> assignments = assignmentRepo.findByCourseAndNameIgnoreCase(course, assigmentName);
         if (assignments != null && !assignments.isEmpty()) {
             return assignments.stream()

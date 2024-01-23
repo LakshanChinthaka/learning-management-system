@@ -10,6 +10,7 @@ import com.chinthaka.learningmanagementsystem.repo.AssignmentDetailsRepo;
 import com.chinthaka.learningmanagementsystem.repo.AssignmentRepo;
 import com.chinthaka.learningmanagementsystem.repo.StudentRepo;
 import com.chinthaka.learningmanagementsystem.service.IAssigmentDetailsService;
+import com.chinthaka.learningmanagementsystem.utils.EntityUtils;
 import com.chinthaka.learningmanagementsystem.utils.FileUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -38,10 +39,8 @@ public class AssignmentDetailsServiceImpl implements IAssigmentDetailsService {
 
     @Override
     public String uploadAssigment(MultipartFile file, long assDetailsId, long studentId, long assignmentId) throws IOException {
-        final Student student = studentRepo.findById(studentId)
-                .orElseThrow(() -> new NotFoundException("Student not found"));
-        final Assignment assignment = assignmentRepo.findById(assignmentId)
-                .orElseThrow(() -> new NotFoundException("assigment not found"));
+        final Student student = EntityUtils.getStudentDetails(studentId,studentRepo);
+        final Assignment assignment = EntityUtils.getAssigmentDetails(assignmentId,assignmentRepo);
         if (assignment == null) {
             throw new NotFoundException("Assigment not found");
         }
